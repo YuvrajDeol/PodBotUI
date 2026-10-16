@@ -92,17 +92,33 @@ and only re-plans and re-renders.
 .venv/bin/python app.py            # http://127.0.0.1:7860  (bound to localhost only)
 ```
 
-A **Mode** switch at the top selects "3 clips (multicam)" or "1 wide clip (auto-reframe)". In
-single-clip mode only the wide upload slot is shown, together with the Speaker A side
-(left/right), a close-up size slider and a max-zoom slider. The result includes a **crop
-preview** image: the wide frame with both close-up rectangles drawn. Tick *Plan only* to check
-the framing before a long render.
+One page, three numbered steps. It follows the system light/dark setting and works offline
+(fonts are served locally).
 
-The UI has upload slots for cam A, cam B, the wide shot and optional master audio; colour
-pickers for the A and B captions; a whisper model dropdown; a language box; a **Swap speakers**
-checkbox; a plan-only checkbox; and sliders for the editing rules. You get a progress bar, a
-video player and download links for the video, EDL, captions and transcript, plus the EDL
-table, the speaker-labelled transcript and the log. Each run is written to `ui_runs/<timestamp>/`.
+1. **Upload**: one dropzone. Drop **1 wide clip** (single-clip mode: close-ups are cropped from
+   it) or **3 clips** (multicam). With 3 clips, the *Speaker A close-up*, *Speaker B close-up* and
+   *Wide shot* dropdowns are pre-filled from the file names (`cam_a`, `cam_b`, `wide`, ...). 2 or
+   4+ files, or the same file in two roles, show an inline message and keep the buttons disabled.
+2. **Speakers & captions**: in single-clip mode a frame from the clip and two tiles, *Who is
+   Speaker A? Left person / Right person*. Caption colour pickers with a live preview.
+3. **Edit**: **Edit my podcast** renders the video; **Preview cut plan** plans cuts and captions
+   without rendering (fast; use it to check the framing). **Advanced settings** (collapsed) holds
+   everything else: *Accuracy* (Fast/Balanced/Best = whisper `base`/`small`/`large-v3`),
+   language, people talking, swap A/B, *Cut style* presets (Calm / Balanced / Snappy, with the six
+   rule sliders under *Fine-tune*), *Quality* (1080p / 720p / 4K at 30 fps, or Custom), master
+   audio and manual sync offsets, and the single-clip close-up size and max zoom. Untouched, the
+   settings are exactly the CLI defaults; other whisper models and the remaining options are
+   CLI-only.
+
+While it runs you see the five stages (prepare & sync, transcribe, identify speakers, plan cuts,
+render) with a percentage and elapsed time. The result shows summary chips, the video, a **cut
+timeline** (click a shot, or a transcript line, to jump the video there), download buttons for
+the video, captions (.srt), cut list (.csv) and transcript (.json), a warnings card (with
+**Swap A and B, re-run** when the speaker mapping is not confident), the crop preview in
+single-clip mode, and a *Details* tab with sync offsets, mapping, the EDL table, every output
+file and the log. Errors appear in a panel with technical details; the form stays filled in for
+a retry. Each run is written to `ui_runs/<timestamp>/`. Styling lives in `ui/podbot.css` and
+`ui/podbot.js`, the HTML widgets in `ui/render.py`.
 
 ## 5. How it works
 
@@ -505,6 +521,7 @@ Results measured on this machine:
 ```
 podcast_autoeditor/
   app.py                    Gradio UI (127.0.0.1)
+  ui/                       UI theme (podbot.css, podbot.js) + HTML widgets (render.py)
   requirements.txt
   podcast_autoeditor/
     __main__.py, cli.py     CLI
