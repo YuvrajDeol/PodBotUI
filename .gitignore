@@ -1,0 +1,20 @@
+# Python
+__pycache__/
+*.pyc
+.pytest_cache/
+.venv/
+
+# macOS
+.DS_Store
+
+# Generated demos, renders and run outputs (recreate with scripts/make_demo.py)
+demo*/
+out/
+review/
+ui_runs/
+sw/
+*_work/
+*.mp4
+*.mov
+*.wav
+*.m4a
